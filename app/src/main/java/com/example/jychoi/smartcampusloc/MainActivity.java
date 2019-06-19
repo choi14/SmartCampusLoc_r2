@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     private float[] aggRotation = new float[3];
     private float[] filteredRotation = new float[3];
     private float[] correctedRotation = new float[3];
-    private float[] correctedByDoor = new float[3];
+//    private float[] correctedByDoor = new float[3];
     //private float sumGeo;
     //private float rmsGeo;
 
@@ -142,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
     private double yCoordinate = 0;
     private double x1 = 0;
     private double y1 = 0;
-    private double x2 = 0; // corrected when passing door
-    private double y2 = 0;
+//    private double x2 = 0; // corrected when passing door
+//    private double y2 = 0;
     private float maxGravity = 0;
 
     /**
@@ -312,8 +312,8 @@ public class MainActivity extends AppCompatActivity {
         yCoordinate = 0;
         x1 = 0;
         y1 = 0;
-        x2 = 0;
-        y2 = 0;
+//        x2 = 0;
+//        y2 = 0;
         stepCount = 0;
         totalLength = 0;
         //sumGeo = 0;
@@ -324,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
             aggRotation[i] = 90;
             filteredRotation[i] = 90;
             correctedRotation[i] = 90;
-            correctedByDoor[i] = 90;
+//            correctedByDoor[i] = 90;
         }
         bleList.clear();
         setBleList(bleList);
@@ -341,10 +341,10 @@ public class MainActivity extends AppCompatActivity {
     private void resetTextView() {
         textView[0].setText(" Time: 0");
         textView[1].setText(" Step count: " + stepCount);
-        textView[2].setText(" Heading Direction: " + String.format("%.0f", filteredRotation[mainAxis]));
+        textView[2].setText(" Heading Direction: " + String.format("%.0f", correctedRotation[mainAxis]));
         textView[3].setText(" Total Length: " + String.format("%.1f", totalLength));
-        textView[4].setText(" Position: (" + String.format("%.1f", x1) + ", " + String.format("%.1f", y1) + ")"
-                + " (" + String.format("%.1f", x2) + ", " + String.format("%.1f", y2) + ")");
+        textView[4].setText(" Position: (" + String.format("%.1f", x1) + ", " + String.format("%.1f", y1) + ")");
+//                + " (" + String.format("%.1f", x2) + ", " + String.format("%.1f", y2) + ")");
 //        textView[4].setText(" Position: (" + String.format("%.1f", x1) + ", " + String.format("%.1f", y1) + ")");
         textView[7].setText(" Room State " + detState);
         switch (onHand) {
@@ -525,8 +525,8 @@ public class MainActivity extends AppCompatActivity {
                             x1 = (x1 + stepLength * Math.cos(correctedRotation[mainAxis] * maxGravity / Math.abs(maxGravity) / RAD2DGR)); // 처음 직진하는 축을 x 축이라고 생각
                             y1 = (y1 + stepLength * Math.sin(correctedRotation[mainAxis] * maxGravity / Math.abs(maxGravity) / RAD2DGR));
 
-                            x2 = (x2 + stepLength * Math.cos(correctedByDoor[mainAxis] * maxGravity / Math.abs(maxGravity) / RAD2DGR)); // 문 지나가는 순간으로 보정한 결과
-                            y2 = (y2 + stepLength * Math.sin(correctedByDoor[mainAxis] * maxGravity / Math.abs(maxGravity) / RAD2DGR));
+//                            x2 = (x2 + stepLength * Math.cos(correctedByDoor[mainAxis] * maxGravity / Math.abs(maxGravity) / RAD2DGR)); // 문 지나가는 순간으로 보정한 결과
+//                            y2 = (y2 + stepLength * Math.sin(correctedByDoor[mainAxis] * maxGravity / Math.abs(maxGravity) / RAD2DGR));
 
                             String log = String.valueOf((preLogTime - sysTime) / 1000) //로그 찍는 타임 싱크를 맞춰야함
                                     .concat(",step," + stepCount)
@@ -534,8 +534,8 @@ public class MainActivity extends AppCompatActivity {
                                     .concat(",len," + String.format("%.2f", totalLength))
                                     .concat(",x1," + String.format("%.2f", x1))
                                     .concat(",y1," + String.format("%.2f", y1))
-                                    .concat(",x2," + String.format("%.2f", x2))
-                                    .concat(",y2," + String.format("%.2f", y2))
+//                                    .concat(",x2," + String.format("%.2f", x2))
+//                                    .concat(",y2," + String.format("%.2f", y2))
                                     .concat(",axis," + mainAxis)
                                     .concat(",onHand," + onHand)
                                     .concat(",degree," + correctedRotation[mainAxis]);
@@ -543,10 +543,10 @@ public class MainActivity extends AppCompatActivity {
                             writeLog(raf[1], log);
                             textView[0].setText(" Time: " + (long) (preLogTime - sysTime) / 1000);
                             textView[1].setText(" Step count: " + stepCount);
-                            textView[2].setText(" Heading Direction: " + String.format("%.0f", filteredRotation[mainAxis]));
+                            textView[2].setText(" Heading Direction: " + String.format("%.0f", correctedRotation[mainAxis]));
                             textView[3].setText(" Total Length: " + String.format("%.1f", totalLength));
-                            textView[4].setText(" Position: (" + String.format("%.1f", x1) + ", " + String.format("%.1f", y1) + ")"
-                                    + " (" + String.format("%.1f", x2) + ", " + String.format("%.1f", y2) + ")");
+                            textView[4].setText(" Position: (" + String.format("%.1f", x1) + ", " + String.format("%.1f", y1) + ")");
+//                                    + " (" + String.format("%.1f", x2) + ", " + String.format("%.1f", y2) + ")");
 //                            textView[4].setText(" Position: (" + String.format("%.1f", x1) + ", " + String.format("%.1f", y1) + ")");
                             switch (onHand) {
                                 case 0:
@@ -674,7 +674,7 @@ public class MainActivity extends AppCompatActivity {
             /* Turn Detection */
             if (Math.abs(filteredRotation[mainAxis]) > rotationThreshold) {
                 correctedRotation[mainAxis] += rotation[mainAxis];
-                correctedByDoor[mainAxis] += rotation[mainAxis];
+//                correctedByDoor[mainAxis] += rotation[mainAxis];
                 rotationFlag = true;
             } else {
                 rotationFlag = false;
@@ -736,9 +736,9 @@ public class MainActivity extends AppCompatActivity {
                         .concat(",filtered_X," + String.format("%.2f", filteredRotation[0]))
                         .concat(",filtered_Y," + String.format("%.2f", filteredRotation[1]))
                         .concat(",filtered_Z," + String.format("%.2f", filteredRotation[2]))
-                        .concat(",door_X," + String.format("%.2f", correctedByDoor[0]))
-                        .concat(",door_Y," + String.format("%.2f", correctedByDoor[1]))
-                        .concat(",door_Z," + String.format("%.2f", correctedByDoor[2]))
+//                        .concat(",door_X," + String.format("%.2f", correctedByDoor[0]))
+//                        .concat(",door_Y," + String.format("%.2f", correctedByDoor[1]))
+//                        .concat(",door_Z," + String.format("%.2f", correctedByDoor[2]))
                         .concat(",corrected_X," + String.format("%.2f", correctedRotation[0]))
                         .concat(",corrected_Y," + String.format("%.2f", correctedRotation[1]))
                         .concat(",corrected_Z," + String.format("%.2f", correctedRotation[2]));
