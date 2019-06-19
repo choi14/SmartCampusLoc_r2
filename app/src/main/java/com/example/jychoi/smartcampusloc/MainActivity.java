@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -74,7 +75,14 @@ public class MainActivity extends AppCompatActivity {
             "cc:09:eb:e6:f3:06",
             "e5:41:92:60:1f:9f",
             "fa:2c:8b:f1:8c:38",
-            "fd:38:65:74:45:c2"};
+            "fd:38:65:74:45:c2",
+            "d7:e4:cb:44:2b:c6",
+            "d5:e8:c4:66:3c:47",
+            "d5:37:8c:5a:fc:02",
+            "c6:3d:75:cd:3f:a7",
+            "e5:5c:05:bd:8d:bf",
+            "e9:48:b7:07:8f:54"
+    };
 
 
     ArrayList<infoBle> bleList;
@@ -142,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
     private double yCoordinate = 0;
     private double x1 = 0;
     private double y1 = 0;
-//    private double x2 = 0; // corrected when passing door
+    //    private double x2 = 0; // corrected when passing door
 //    private double y2 = 0;
     private float maxGravity = 0;
 
@@ -802,19 +810,27 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            if (serviceData[0] == EDDYSTONE_URL_FRAME_TYPE && serviceData.length == 5 && serviceData[3] == URL_DATA && serviceData[4] == URL_DATA) {
+//            if (serviceData[0] == EDDYSTONE_URL_FRAME_TYPE && serviceData.length == 5 && serviceData[3] == URL_DATA && serviceData[4] == URL_DATA) { //aa
+            if (serviceData[0] == EDDYSTONE_URL_FRAME_TYPE && serviceData[3] == URL_DATA && serviceData[4] == URL_DATA) { //aa
                 String mac = result.getDevice().getAddress().toLowerCase();
 //                String time = Long.toString(System.currentTimeMillis());
                 int rssi = result.getRssi();
                 checkBleInfo(mac, rssi);
 //                Log.i(TAG2, "MAC: " + mac);
+                int dataLength = serviceData.length;
 
-//                int dataLength = serviceData.length;
-//                Log.i(TAG2, "MAC: " + mac +" length: " + dataLength + " ServiceUUids " + byteArrayToHex(scanRecord.getBytes()));
+                String str = byteArrayToHex(scanRecord.getBytes());
+                String urlString = str.substring(42, 42 + (dataLength - 3) * 3);
+                Log.i(TAG2, "MAC: " + mac + " length: " + dataLength + " URL: " + hexToAscii(urlString));
+//                    Log.i(TAG2, "subString " + urlString);
+
+
+//                    Log.i(TAG2, "MAC: " + mac +" length: " + dataLength + " ServiceUUids " + hexToAscii(str) + " Hex " + byteArrayToHex(scanRecord.getBytes()));
+
+//                    Log.i(TAG2, "MAC: " + mac +" length: " + dataLength + " ServiceUUids " + byteArrayToHex(scanRecord.getBytes()));
+
 //            Log.i(TAG2, "Service Data Size: " + dataLength + " " +  mac);
-//            for(int i = 0; i < dataLength; i++){
-//                Log.i(TAG2, "Service Data Size: " + dataLength + " " + serviceData[0] + " " + serviceData[1] + " " + serviceData[2] + " "+ serviceData[3] + " " + serviceData[4]);
-//            }
+
 //            Log.i(TAG2, "\n");
 
             }
@@ -889,7 +905,7 @@ public class MainActivity extends AppCompatActivity {
         String log = String.valueOf((System.currentTimeMillis() - sysTime) / 1000);
 //        String log2 = String.valueOf((System.currentTimeMillis() - sysTime) / 1000);
         for (int i = 0; i < size; i++) {
-              log = log.concat("," + bleList.get(i).rssi);
+            log = log.concat("," + bleList.get(i).rssi);
 //            log2 = log2.concat("," + bleList.get(i).mac);
         }
         String log2 = log.concat("," + x1)
@@ -958,12 +974,28 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //    }
 
-//    String byteArrayToHex(byte[] a) {
-//        StringBuilder sb = new StringBuilder();
-//        for(final byte b: a)
-//            sb.append(String.format("%02x ", b&0xff));
-//        return sb.toString();
-//    }
+    String byteArrayToHex(byte[] a) {
+        StringBuilder sb = new StringBuilder();
+        for (final byte b : a)
+            sb.append(String.format("%02x ", b & 0xff));
+        return sb.toString();
+    }
+
+    private static String hexToAscii(String hexStr) {
+        StringBuilder output = new StringBuilder("");
+//        Log.i(TAG2,  "hexStr: " + hexStr + " Length: " +  hexStr.length() + " SubString: " +  hexStr.substring(0,2) +" "+ hexStr.substring(3,5) + " "+ hexStr.substring(6,8));
+        for (int i = 0; i < hexStr.length(); i += 3) {
+//            Log.i(TAG2, "Index: " + i);
+            String str = hexStr.substring(i, i + 2);
+//            Log.i(TAG2, "Str: " + str);
+            int intValue = Integer.parseInt(str, 16);
+//            Log.i(TAG2, "Str: " + str + " intVale: " + intValue + " Char: " + (char) intValue);
+            output.append((char) intValue);
+        }
+
+        return output.toString();
+    }
+
 
     @Override
     protected void onDestroy() {
