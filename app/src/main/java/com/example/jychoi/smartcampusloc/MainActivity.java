@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         int rssi = 0;
     }
 
-    private String[] addr = {
+    private String[] bleAddr = {
             "fa:c2:e1:27:25:6d",
             "e3:85:19:54:52:9f",
             "fd:54:78:6c:9e:a6",
@@ -125,8 +125,8 @@ public class MainActivity extends AppCompatActivity {
     private static final double RAD2DGR = 180 / Math.PI;
     private static final float MS2S = 1.0f / 1000.0f;
     private SensorManager sensorManager;
-    private Sensor accSensor, gyroSensor, geoSensor;
-    private SensorEventListener accLis, gyroLis, geoLis;
+    private Sensor accSensor, gyroSensor; //, geoSensor;
+    private SensorEventListener accLis, gyroLis; //, geoLis;
     //private boolean stepDetectionFlag = true;
     private float[] aggRotation = new float[3];
     private float[] filteredRotation = new float[3];
@@ -178,9 +178,9 @@ public class MainActivity extends AppCompatActivity {
 //    private String bssid;
 
     private void setBleList(ArrayList bleList) {
-        for (String anAddr : addr) {
+        for (String address : bleAddr) {
             infoBle ble = new infoBle();
-            ble.mac = anAddr;
+            ble.mac = address;
             ble.rssi = -100;
             bleList.add(ble);
         }
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
         if (sensorManager != null) {
             accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-            geoSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+//            geoSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         }
 
         accLis = new accelerometerListener();
@@ -340,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
     private void resetTextView() {
         textView[0].setText(" Time: 0");
-        textView[1].setText(" Step count: " + String.valueOf(stepCount));
+        textView[1].setText(" Step count: " + stepCount);
         textView[2].setText(" Heading Direction: " + String.format("%.0f", filteredRotation[mainAxis]));
         textView[3].setText(" Total Length: " + String.format("%.1f", totalLength));
         textView[4].setText(" Position: (" + String.format("%.1f", x1) + ", " + String.format("%.1f", y1) + ")"
@@ -435,8 +435,8 @@ public class MainActivity extends AppCompatActivity {
             sensorManager.registerListener(accLis, accSensor, SensorManager.SENSOR_DELAY_FASTEST);
         if (gyroSensor != null)
             sensorManager.registerListener(gyroLis, gyroSensor, SensorManager.SENSOR_DELAY_FASTEST);
-        if (geoSensor != null)
-            sensorManager.registerListener(geoLis, geoSensor, SensorManager.SENSOR_DELAY_FASTEST);
+//        if (geoSensor != null)
+//            sensorManager.registerListener(geoLis, geoSensor, SensorManager.SENSOR_DELAY_FASTEST);
         //wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
     }
 
@@ -446,7 +446,7 @@ public class MainActivity extends AppCompatActivity {
         if (sensorManager != null) {
             sensorManager.unregisterListener(accLis);
             sensorManager.unregisterListener(gyroLis);
-            sensorManager.unregisterListener(geoLis);
+            //sensorManager.unregisterListener(geoLis);
         }
     }
 
@@ -456,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
 
     private class accelerometerListener implements SensorEventListener {
 
-        private double lastPeakTime, stepLength, preLogTime, preLogTime2;
+        private double lastPeakTime, stepLength, preLogTime; //, preLogTime2;
         private float slope, prevAcc;
         float[] gravity = new float[3];
         float[] linear_acceleration = new float[3];
@@ -474,7 +474,7 @@ public class MainActivity extends AppCompatActivity {
             int maxStepFreq = 2000;
             double accMin = 0.5, accMax = 3;
             double logInterval = 30; //단위 ms
-            double logInterval2 = 300; //단위 ms
+            // double logInterval2 = 300; //단위 ms
             final float alpha = (float) 0.2;
             double curTime = System.currentTimeMillis();
             double stepInterval = preLogTime - lastPeakTime;
@@ -529,7 +529,7 @@ public class MainActivity extends AppCompatActivity {
                             y2 = (y2 + stepLength * Math.sin(correctedByDoor[mainAxis] * maxGravity / Math.abs(maxGravity) / RAD2DGR));
 
                             String log = String.valueOf((preLogTime - sysTime) / 1000) //로그 찍는 타임 싱크를 맞춰야함
-                                    .concat(",step," + String.valueOf(stepCount))
+                                    .concat(",step," + stepCount)
                                     .concat(",acc," + String.format("%.2f", prevAcc))
                                     .concat(",len," + String.format("%.2f", totalLength))
                                     .concat(",x1," + String.format("%.2f", x1))
@@ -541,8 +541,8 @@ public class MainActivity extends AppCompatActivity {
                                     .concat(",degree," + correctedRotation[mainAxis]);
                             Log.i(TAG1, log);
                             writeLog(raf[1], log);
-                            textView[0].setText(" Time: " + Long.toString((long) (preLogTime - sysTime) / 1000));
-                            textView[1].setText(" Step count: " + String.valueOf(stepCount));
+                            textView[0].setText(" Time: " + (long) (preLogTime - sysTime) / 1000);
+                            textView[1].setText(" Step count: " + stepCount);
                             textView[2].setText(" Heading Direction: " + String.format("%.0f", filteredRotation[mainAxis]));
                             textView[3].setText(" Total Length: " + String.format("%.1f", totalLength));
                             textView[4].setText(" Position: (" + String.format("%.1f", x1) + ", " + String.format("%.1f", y1) + ")"
