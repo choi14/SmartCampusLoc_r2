@@ -65,23 +65,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String[] bleAddr = {
-            "fa:c2:e1:27:25:6d",
-            "e3:85:19:54:52:9f",
-            "fd:54:78:6c:9e:a6",
-            "fc:35:a5:60:19:cd",
-            "c9:83:5f:68:4d:60",
-            "d4:f2:e3:63:97:bf",
-            "dc:fc:1c:d8:9b:4c",
-            "cc:09:eb:e6:f3:06",
-            "e5:41:92:60:1f:9f",
-            "fa:2c:8b:f1:8c:38",
-            "fd:38:65:74:45:c2",
-            "d7:e4:cb:44:2b:c6",
-            "d5:e8:c4:66:3c:47",
-            "d5:37:8c:5a:fc:02",
-            "c6:3d:75:cd:3f:a7",
-            "e5:5c:05:bd:8d:bf",
-            "e9:48:b7:07:8f:54"
+            "fa:c2:e1:27:25:6d", // 1. blue8
+            "e3:85:19:54:52:9f", // 2. mint4
+            "fd:54:78:6c:9e:a6", // 3. blue7
+            "fc:35:a5:60:19:cd", // 4. blue2
+            "c9:83:5f:68:4d:60", // 5. blue5
+            "d4:f2:e3:63:97:bf", // 6. blue1
+            "dc:fc:1c:d8:9b:4c", // 7. blue4
+            "cc:09:eb:e6:f3:06", // 8. blue6
+            "e5:41:92:60:1f:9f", // 9. blue3
+            "fa:2c:8b:f1:8c:38", // 10. ice4
+            "fd:38:65:74:45:c2", // 11. ice5
+            "d7:e4:cb:44:2b:c6", // 12. ice1
+            "d5:e8:c4:66:3c:47", // 13. ice2
+            "d5:37:8c:5a:fc:02", // 14. ice3
+            "c6:3d:75:cd:3f:a7", // 15. mint1
+            "e5:5c:05:bd:8d:bf", // 16. mint2
+            "e9:48:b7:07:8f:54"  // 17. mint3
     };
 
 
@@ -982,7 +982,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static String hexToAscii(String hexStr) {
-        StringBuilder output = new StringBuilder("");
+        StringBuilder output = new StringBuilder();
 //        Log.i(TAG2,  "hexStr: " + hexStr + " Length: " +  hexStr.length() + " SubString: " +  hexStr.substring(0,2) +" "+ hexStr.substring(3,5) + " "+ hexStr.substring(6,8));
         for (int i = 0; i < hexStr.length(); i += 3) {
 //            Log.i(TAG2, "Index: " + i);
